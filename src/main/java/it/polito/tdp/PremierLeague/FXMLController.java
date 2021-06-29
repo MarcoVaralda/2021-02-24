@@ -47,17 +47,41 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-    	
+    	this.txtResult.clear();
+    	Match m = this.cmbMatch.getValue();
+    	if(m==null) {
+    		this.txtResult.setText("Devi inserire un match!");
+    		return;
+    	}
+    	this.txtResult.setText(this.model.creaGrafo(m));
+    	this.btnGiocatoreMigliore.setDisable(false);
+        this.btnSimula.setDisable(false);
     }
 
     @FXML
     void doGiocatoreMigliore(ActionEvent event) {    	
-    	
+    	this.txtResult.appendText(this.model.getMigliore());
     }
     
     @FXML
     void doSimula(ActionEvent event) {
-
+    	String numAzioni = this.txtN.getText();
+    	int n = 0;
+    	try {
+    		n = Integer.parseInt(numAzioni);
+    	}
+    	catch(NumberFormatException nbe) {
+    		this.txtResult.setText("Devi inserire un numero intero di azioni salienti!");
+    		return;
+    	}
+    	
+    	Match m = this.cmbMatch.getValue();
+    	if(m==null) {
+    		this.txtResult.setText("Devi inserire un match!");
+    		return;
+    	}
+    	
+    	this.txtResult.appendText(this.model.simula(n, m));
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -68,10 +92,12 @@ public class FXMLController {
         assert cmbMatch != null : "fx:id=\"cmbMatch\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtN != null : "fx:id=\"txtN\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Scene.fxml'.";
-
+        this.btnGiocatoreMigliore.setDisable(true);
+        this.btnSimula.setDisable(true);
     }
     
     public void setModel(Model model) {
     	this.model = model;
+    	this.cmbMatch.getItems().addAll(this.model.getAllMatches());
     }
 }
